@@ -6,10 +6,9 @@ const AuthError = require('../errors/AuthError');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 const DuplicateError = require('../errors/DuplicateError');
+const { JWT_SECRET } = require('../utils/constants');
 
 dotenv.config();
-
-const { NODE_ENV, JWT_SECRET } = process.env;
 
 const getMyUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -86,7 +85,7 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        `${NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret'}`,
+        JWT_SECRET,
         {
           expiresIn: '7d',
         },
