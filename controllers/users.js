@@ -6,12 +6,19 @@ const AuthError = require('../errors/AuthError');
 const NotFoundError = require('../errors/NotFoundError');
 const ValidationError = require('../errors/ValidationError');
 const DuplicateError = require('../errors/DuplicateError');
-const { JWT_SECRET } = require('../utils/constants');
+/*const { JWT_SECRET } = require('../utils/constants');*/
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 dotenv.config();
 
 const getMyUser = (req, res, next) => {
   User.findById(req.user._id)
+    .then((user) => res.send(user))
+    .catch((err) => {
+      next(err);
+    });
+};
+  /*User.findById(req.user._id)
     .orFail(() => {
       throw new NotFoundError('Пользователя с таким id не существует');
     })
@@ -23,7 +30,7 @@ const getMyUser = (req, res, next) => {
         next(err);
       }
     });
-};
+};*/
 
 const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
@@ -85,12 +92,12 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        JWT_SECRET,
+        NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
         {
           expiresIn: '7d',
-        },
+        }
       );
-      res.send({ token });
+      res.status(200).send({ token });
     })
     .catch((err) => {
       throw new AuthError(err.message);

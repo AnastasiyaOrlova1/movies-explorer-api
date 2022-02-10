@@ -39,19 +39,18 @@ const validateCreateMovie = celebrate({
     description: Joi.string().required(),
     image: Joi.string().required().custom(validateUrl),
     trailer: Joi.string().required().custom(validateUrl),
-    nameRU: Joi.string()
-      .required()
-      .pattern(/[\dа-я\sё]+$/i),
-    nameEN: Joi.string().required().pattern(/\w+$/i),
+    nameRU: Joi.string().required(),
+    nameEN: Joi.string().required(),
     thumbnail: Joi.string().required().custom(validateUrl),
-    movieId: Joi.number().integer(),
-    owner: Joi.string().hex().length(24),
+    movieId: Joi.number().required(),
+    //movieId: Joi.number().integer(),
+    //owner: Joi.string().hex().length(24),
   }),
 });
 
 const validateRemoveMovie = celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().hex().length(24),
+    id: Joi.string().hex().length(24),
   }),
 });
 

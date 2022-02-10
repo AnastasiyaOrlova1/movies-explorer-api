@@ -57,7 +57,8 @@ const movieSchema = new mongoose.Schema({
     validator: (nameRU) => /\w+$/i.test(nameRU),
   },
   owner: {
-    type: mongoose.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
     required: true,
   },
   movieId: {
