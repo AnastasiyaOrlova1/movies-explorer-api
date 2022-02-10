@@ -31,7 +31,7 @@
     "joi": "^17.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.4",
-    "node": "^17.3.0",
+    "node": "^14.15.5",
     "validator": "^13.7.0",
     "winston": "^3.3.4"
   },
