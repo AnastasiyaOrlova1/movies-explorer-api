@@ -104,7 +104,7 @@ app.use(requestLogger);
 app.use(
   cors({
     origin: [
-      'https://api.movie.orlova.nomoredomains.rocks',
+      'https://movie.orlova.nomoredomains.rocks',
       'http://localhost:3000',
     ],
     credentials: true,
