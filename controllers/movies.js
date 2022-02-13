@@ -14,7 +14,7 @@ const getMovies = (req, res, next) => {
 };
 
 const createMovie = (req, res, next) => {
-  const owner = req.user._id;
+
   const {
     country,
     director,
@@ -28,6 +28,8 @@ const createMovie = (req, res, next) => {
     thumbnail,
     movieId,
   } = req.body;
+
+  const owner = req.user._id;
 
   Movie.create({
     country,
@@ -54,8 +56,19 @@ const createMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  const userId = req.user._id;
-  //Movie.findById(req.params.id)
+  Movie.findById(req.params.movieId)
+  .orFail(new NotFoundError('Фильм не найден.'))
+  .then((movie) => {
+    if (!movie.owner.equals(req.user._id)) {
+      return next(new ForbiddenError('Вы не можете удалить этот фильм.'));
+    }
+    return movie.remove().then(() => res.send({ message: 'Фильм удален.' }));
+  })
+  .catch(next);
+};
+
+  /*const userId = req.user._id;
+
    Movie.findById(req.params.movieId)
     .orFail(() => {
       throw new NotFoundError('NotFound');
@@ -79,7 +92,7 @@ const deleteMovie = (req, res, next) => {
         next(err);
       }
     });
-};
+};*/
 
 /*const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;

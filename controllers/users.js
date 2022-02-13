@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const dotenv = require('dotenv');
+//const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const AuthError = require('../errors/AuthError');
@@ -9,7 +9,6 @@ const DuplicateError = require('../errors/DuplicateError');
 /*const { JWT_SECRET } = require('../utils/constants');*/
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-dotenv.config();
 
 const getMyUser = (req, res, next) => {
   User.findById(req.user._id)
@@ -32,7 +31,7 @@ const getMyUser = (req, res, next) => {
     });
 };*/
 
-const createUser = (req, res, next) => {
+/*const createUser = (req, res, next) => {
   const { name, email, password } = req.body;
   if (!email || !password) {
     throw new AuthError('Пароль или почта некорректны');
@@ -58,6 +57,36 @@ const createUser = (req, res, next) => {
         }
       });
   });
+};*/
+const createUser = (req, res, next) => {
+  const { name, email, password } = req.body;
+  bcrypt
+    .hash(password, 10)
+    .then((hash) =>
+      User.create({
+        name,
+        email,
+        password: hash,
+      })
+    )
+    .then((user) =>
+      res.send({
+        _id: user._id,
+        name,
+        email,
+      })
+    )
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('Переданы некорректные данные.'));
+      } else if (err.code === 11000) {
+        next(
+          new DuplicateError('Пользователь с такими данными уже есть в базе')
+        );
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateUser = (req, res, next) => {
