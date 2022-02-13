@@ -75,7 +75,7 @@ const helmet = require('helmet');
 // База данных
 const mongoose = require('mongoose');
 // ПОРТ
-const { NODE_ENV, PORT = 3001, DATA_BASE } = process.env;
+const { NODE_ENV, PORT = 3000, DATA_BASE } = process.env;
 // РОУТЫ
 const routes = require('./routes/index');
 
